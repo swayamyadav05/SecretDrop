@@ -7,7 +7,7 @@ type ConnectionObject = {
 const connection: ConnectionObject = {};
 
 async function dbConnect(): Promise<void> {
-  if (connection.isConnected) {
+  if (connection.isConnected === 1) {
     console.log("Already connected to database");
     return;
   }
@@ -24,7 +24,9 @@ async function dbConnect(): Promise<void> {
   } catch (error) {
     console.log("Database connection failed", error);
 
-    process.exit(1);
+    throw error instanceof Error
+      ? error
+      : new Error("Database connection failed");
   }
 }
 
