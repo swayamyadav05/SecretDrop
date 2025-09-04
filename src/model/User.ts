@@ -39,14 +39,17 @@ const UserSchema: Schema<User> = new Schema({
     type: String,
     required: [true, "Email is required"],
     unique: true,
+    trim: true,
+    lowercase: true,
     match: [
-      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g,
-      "please use a valid email address",
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
+      "Please use a valid email address",
     ],
   },
   password: {
     type: String,
     required: [true, "Password is required"],
+    select: false,
   },
   verifyCode: {
     type: String,
@@ -68,7 +71,7 @@ const UserSchema: Schema<User> = new Schema({
 });
 
 const UserModel =
-  (mongoose.models.user as mongoose.Model<User>) ||
+  (mongoose.models.User as mongoose.Model<User>) ||
   mongoose.model<User>("User", UserSchema);
 
 export default UserModel;
