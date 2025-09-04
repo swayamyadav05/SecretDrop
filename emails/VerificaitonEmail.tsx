@@ -33,20 +33,26 @@ export default function VerificationEmail({
           fontStyle="normal"
         />
       </Head>
-      <Preview>Here&apos;s your Verification code: {otp}</Preview>
+      <Preview>Your SecretDrop verification code: {otp}</Preview>
       <Section>
         <Row>
-          <Heading as="h2">Hellow {username},</Heading>
+          <Heading as="h2">Hello {username},</Heading>
         </Row>
         <Row>
           <Text>
-            Thank you for registering. Please use the following
-            verification code to complete your registration:
+            Thank you for registering. Use the verification code below
+            to complete your sign‑up:
           </Text>
         </Row>
         <Row>
+          <Heading as="h3" style={{ letterSpacing: "0.2em" }}>
+            {otp}
+          </Heading>
+        </Row>
+        <Row>
           <Text>
-            If you did not request tis code, please ignore this email.
+            If you did not request this code, please ignore this
+            email.
           </Text>
         </Row>
       </Section>
