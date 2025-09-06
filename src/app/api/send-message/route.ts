@@ -5,8 +5,8 @@ import { Message } from "@/model/User";
 export async function POST(request: Request) {
   await dbConnect();
 
-  const { username, content } = await request.json();
   try {
+    const { username, content } = await request.json();
     const user = await UserModel.findOne({ username });
     if (!user) {
       return Response.json(
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!user.isAcceptingMessage) {
+    if (!user.isAcceptingMessages) {
       return Response.json(
         {
           success: false,
