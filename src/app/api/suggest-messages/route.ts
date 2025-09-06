@@ -45,8 +45,7 @@ export async function POST() {
       return NextResponse.json(
         {
           success: false,
-          error: error.message,
-          name: error.name,
+          message: "Internal error",
         },
         {
           status: 500,
