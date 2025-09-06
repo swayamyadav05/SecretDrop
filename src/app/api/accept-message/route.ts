@@ -104,14 +104,11 @@ export async function GET(reques: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(
-      "Failed to update user status to accept messages",
-      error
-    );
+    console.error("Failed to fetch message acceptance status", error);
     return Response.json(
       {
         success: false,
-        message: "Error is getting message acceptance status",
+        message: "Error getting message acceptance status",
       },
       { status: 500 }
     );
