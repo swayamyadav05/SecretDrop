@@ -18,7 +18,7 @@ export async function POST(request: Request) {
           success: false,
           message: "User not found",
         },
-        { status: 500 }
+        { status: 400 }
       );
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
           success: false,
           message: "Incorrect Verification Code",
         },
-        { status: 500 }
+        { status: 400 }
       );
     }
   } catch (error) {
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         success: false,
         message: "Error verifying user",
       },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }
