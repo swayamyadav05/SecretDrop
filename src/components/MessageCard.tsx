@@ -55,7 +55,8 @@ export const MessageCard = ({
     setIsViewDialogOpen(true);
   };
 
-  const formatTimestamp = (date: Date) => {
+  const formatTimestamp = (input: string | Date) => {
+    const date = typeof input === "string" ? new Date(input) : input;
     const now = new Date();
     const diffInHours = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60 * 60)
@@ -78,13 +79,18 @@ export const MessageCard = ({
   };
 
   const handleDeleteConfirm = async () => {
-    const response = await axios.delete<ApiResponse>(
-      `/api/delete-message/${message._id}`
-    );
-    toast({
-      title: response.data.message,
-    });
-    onDelete(String(message._id));
+    try {
+      const response = await axios.delete<ApiResponse>(
+        `/api/delete-message/${message._id}`
+      );
+      toast({ title: response.data.message });
+      onDelete(String(message._id));
+    } catch (err: unknown) {
+      toast({
+        title: "Failed to delete message",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

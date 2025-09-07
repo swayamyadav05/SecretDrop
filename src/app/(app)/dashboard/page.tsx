@@ -3,7 +3,7 @@ import React from "react";
 
 const DashboardPage = () => {
   return (
-    <div className="min-h-screen mt-20">
+    <div className="min-h-screen">
       Dashboard Page
       <div></div>
     </div>

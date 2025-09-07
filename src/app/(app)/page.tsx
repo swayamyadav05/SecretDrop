@@ -39,7 +39,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+      <section className="pb-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           {/* <img
             src={heroMystery}

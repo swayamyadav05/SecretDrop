@@ -33,7 +33,6 @@ export async function GET(request: Request) {
         $group: {
           _id: "$_id",
           messages: { $push: "$messages" },
-          isRead: { $first: "$isRead" },
         },
       },
     ]);
@@ -41,10 +40,10 @@ export async function GET(request: Request) {
     if (!results || results.length === 0) {
       return Response.json(
         {
-          success: false,
-          message: "User not found",
+          success: true,
+          message: [],
         },
-        { status: 404 }
+        { status: 200 }
       );
     }
 
