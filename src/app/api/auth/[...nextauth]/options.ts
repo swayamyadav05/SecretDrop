@@ -10,31 +10,40 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        email: {
-          label: "Email",
+        identifier: {
+          label: "Email/Username",
           type: "text",
-          placeholder: "user@example.com",
+          placeholder: "user@example.com or username",
         },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(
+        credentials: Record<string, string> | undefined
+      ) {
         await dbConnect();
         try {
+          if (!credentials?.identifier || !credentials?.password) {
+            return null;
+          }
+
           const user = await UserModel.findOne({
             $or: [
               { email: credentials.identifier },
               { username: credentials.identifier },
             ],
-          });
+          }).select("+password"); // Explicitly include the password field
 
           if (!user) {
-            throw new Error("No user found with this email");
+            return null;
           }
 
           if (!user.isVerified) {
-            throw new Error(
-              "Please verify your account first before login"
-            );
+            return null;
+          }
+
+          // Check if password exists before comparing
+          if (!user.password) {
+            return null;
           }
 
           const isPasswordCorrect = await bcrypt.compare(
@@ -43,12 +52,20 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (isPasswordCorrect) {
-            return user;
+            return {
+              id: user._id?.toString() || "",
+              _id: user._id?.toString(),
+              username: user.username,
+              email: user.email,
+              isVerified: user.isVerified,
+              isAcceptingMessages: user.isAcceptingMessages,
+            };
           } else {
-            throw new Error("Incorrect password");
+            return null;
           }
-        } catch (err: any) {
-          throw new Error(err);
+        } catch (err: unknown) {
+          console.error("Authentication error:", err);
+          return null;
         }
       },
     }),
