@@ -16,7 +16,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Loader2, MessageCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Loader2,
+  MessageCircle,
+} from "lucide-react";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 
@@ -76,6 +82,14 @@ const SignInPage = () => {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="absolute top-6 left-6 rounded-sm">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
           <div className="flex justify-center mb-4">
             <div className="flex justify-center items-center w-12 h-12 rounded-full bg-gradient-to-r from-primary to-accent animate-glow">
               <MessageCircle className="relative h-12 w-7 text-background" />
@@ -85,7 +99,7 @@ const SignInPage = () => {
             Welcome Back
           </h1>
           <p className="text-muted-foreground">
-            Sign in to your Secrect Drop account
+            Sign in to your Secret Drop account
           </p>
         </div>
 
@@ -121,7 +135,7 @@ const SignInPage = () => {
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Create a strong password"
+                          placeholder="Enter your secret password"
                           className="bg-muted/50 border-border/50 focus:border-primary pr-10"
                           {...field}
                         />
