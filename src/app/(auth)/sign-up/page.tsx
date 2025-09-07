@@ -20,14 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Droplet,
-  Eye,
-  EyeOff,
-  Loader2,
-  Lock,
-  MessageCircle,
-} from "lucide-react";
+import { Eye, EyeOff, Loader2, MessageCircle } from "lucide-react";
 
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
