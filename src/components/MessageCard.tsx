@@ -58,8 +58,10 @@ export const MessageCard = ({
   const formatTimestamp = (input: string | Date) => {
     const date = typeof input === "string" ? new Date(input) : input;
     const now = new Date();
+    const ms = now.getTime() - date.getTime();
+    if (!isFinite(ms)) return "";
     const diffInHours = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+      Math.max(0, ms) / (1000 * 60 * 60)
     );
 
     if (diffInHours < 1) {
