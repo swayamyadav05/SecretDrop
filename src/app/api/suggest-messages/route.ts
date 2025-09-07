@@ -6,27 +6,15 @@ import { NextResponse } from "next/server";
 export const maxDuration = 30;
 
 export async function POST() {
-  console.log("🚀 API endpoint hit: /api/suggest-messages");
-
   try {
-    console.log("📝 Starting text generation...");
-
     const prompt =
       "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messagin platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal thems that encourage friendly interaction. For example, your output should be stuctured like this: 'What's a hobby you've recently started?||If you could have a dinner with any historical figure, who would it be?||What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
-
-    console.log(
-      "🤖 Calling OpenAI with prompt length:",
-      prompt.length
-    );
 
     const result = await generateText({
       model: openai("gpt-3.5-turbo"),
       maxOutputTokens: 200,
       prompt,
     });
-
-    console.log("✅ OpenAI response received:", result.text);
-    console.log("📊 Usage:", JSON.stringify(result.usage, null, 2));
 
     return NextResponse.json({
       success: true,

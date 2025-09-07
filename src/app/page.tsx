@@ -1,9 +1,7 @@
-import Page from "./(auth)/sign-in/page";
-
 export default function Home() {
   return (
     <>
-      <Page />
+      <h1>Welcome</h1>
     </>
   );
 }

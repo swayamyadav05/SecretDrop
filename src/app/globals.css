@@ -169,6 +169,16 @@
     transition: var(--transition-smooth);
   }
 
+  .message-card-simple {
+    @apply relative overflow-hidden rounded-lg border border-border/50 p-4 shadow-primary shadow-lg;
+    background: linear-gradient(
+      145deg,
+      hsl(225, 6%, 87%),
+      hsl(224, 52%, 92%)
+    );
+    transition: all;
+  }
+
   .message-card:hover {
     @apply border-primary/30;
     box-shadow: var(--glow-primary);

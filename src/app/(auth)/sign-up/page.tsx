@@ -25,6 +25,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Lock,
   MessageCircle,
 } from "lucide-react";
 
@@ -76,11 +77,14 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
+    console.log("Hitting sign-up endpoint");
     try {
       const response = await axios.post<ApiResponse>(
         "/api/sign-up",
         data
       );
+
+      console.log("Response of sign-up api:", response);
 
       toast({
         title: "Account created!",
