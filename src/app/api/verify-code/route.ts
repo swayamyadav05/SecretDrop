@@ -18,7 +18,7 @@ export async function POST(request: Request) {
           success: false,
           message: "User not found",
         },
-        { status: 400 }
+        { status: 404 }
       );
     }
 
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     if (isCodeValid && isCodeNotExpired) {
       user.isVerified = true;
       await user.save();
+
       return Response.json(
         {
           success: true,
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
         {
           success: false,
           message:
-            "Verification code has expired, please signup again to get a new code",
+            "Verification code has expired, please signup again to get a new code.",
         },
         { status: 400 }
       );
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
         success: false,
         message: "Error verifying user",
       },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }

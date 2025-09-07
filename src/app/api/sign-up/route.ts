@@ -33,11 +33,11 @@ export async function POST(request: Request) {
       if (existingUserByEmail.isVerified) {
         return Response.json(
           {
-            success: true,
+            success: false,
             message:
-              "If an account exists for this email, we’ve sent a verification code",
+              "User already exists with this email. Proceed with Sign In",
           },
-          { status: 201 }
+          { status: 400 }
         );
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -77,6 +77,10 @@ export async function POST(request: Request) {
     );
 
     if (!emailResponse.success) {
+      console.error(
+        "Failed to send verification email:",
+        emailResponse.message
+      );
       return Response.json(
         {
           success: false,
