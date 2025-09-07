@@ -1,11 +1,22 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
+import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { User } from "next-auth";
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 
-export async function GET(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { messageid: string } }
+) {
+  const messageId = params.messageid;
+  if (!messageId || !Types.ObjectId.isValid(messageId)) {
+    return Response.json(
+      { success: false, message: "Invalid message id" },
+      { status: 400 }
+    );
+  }
+
   await dbConnect();
 
   const session = await getServerSession(authOptions);
@@ -21,36 +32,33 @@ export async function GET(request: Request) {
     );
   }
 
-  const userId = new mongoose.Types.ObjectId(user._id);
   try {
-    const results = await UserModel.aggregate([
+    const updatedResult = await UserModel.updateOne(
       {
-        $match: { _id: userId },
+        _id: user._id,
       },
-      { $unwind: "$messages" },
-      { $sort: { "messages.createdAt": -1 } },
       {
-        $group: {
-          _id: "$_id",
-          messages: { $push: "$messages" },
+        $pull: {
+          messages: {
+            _id: new Types.ObjectId(messageId),
+          },
         },
-      },
-    ]);
+      }
+    );
 
-    if (!results || results.length === 0) {
+    if (updatedResult.modifiedCount == 0) {
       return Response.json(
         {
-          success: true,
-          message: [],
+          success: false,
+          message: "Message not found or already deleted",
         },
-        { status: 200 }
+        { status: 404 }
       );
     }
-
     return Response.json(
       {
         success: true,
-        messages: results[0].messages,
+        message: "Message deleted successfully",
       },
       { status: 200 }
     );

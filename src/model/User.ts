@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface Message extends Document {
   content: string;
   createdAt: Date;
+  isRead: boolean;
 }
 
 const MessageSchema: Schema<Message> = new Schema({
@@ -14,6 +15,11 @@ const MessageSchema: Schema<Message> = new Schema({
     type: Date,
     required: true,
     default: Date.now,
+  },
+  isRead: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 

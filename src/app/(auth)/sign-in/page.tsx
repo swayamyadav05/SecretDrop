@@ -91,8 +91,8 @@ const SignInPage = () => {
             Back
           </Button>
           <div className="flex justify-center mb-4">
-            <div className="flex justify-center items-center w-12 h-12 rounded-full bg-gradient-to-r from-primary to-accent animate-glow">
-              <MessageCircle className="relative h-12 w-7 text-background" />
+            <div>
+              <MessageCircle className="relative h-12 w-12 gradient-text fill-accent" />
             </div>
           </div>
           <h1 className="text-3xl font-bold gradient-text mb-2">

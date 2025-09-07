@@ -1,18 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MessageCircle,
-  Shield,
-  Users,
-  Zap,
-} from "lucide-react";
+import { MessageCircle, Shield, Users, Zap } from "lucide-react";
 // import heroMystery from "@/assets/hero-mystery.jpg";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const features = [
   {
@@ -41,55 +33,13 @@ const features = [
   },
 ];
 
-const testimonials = [
-  {
-    message:
-      "Secret Drop helped me get honest feedback from my team without any awkwardness!",
-    author: "Sarah M.",
-  },
-  {
-    message:
-      "Finally, a safe space where people can share what they really think.",
-    author: "Alex K.",
-  },
-  {
-    message:
-      "The anonymity feature makes all the difference. Highly recommended!",
-    author: "Jordan P.",
-  },
-];
-
 const Landing = () => {
   const router = useRouter();
 
   return (
     <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="glass-effect fixed top-0 w-full z-50 py-4 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent animate-glow"></div>
-            <h1 className="text-xl font-bold gradient-text">
-              Secret Drop
-            </h1>
-          </div>
-          <div className="flex space-x-4">
-            <Button
-              variant="ghost"
-              onClick={() => router.push("/sign-in")}>
-              Sign In
-            </Button>
-            <Button
-              onClick={() => router.push("/sign-up")}
-              className="mystery-glow">
-              Get Started
-            </Button>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+      <section className="pb-20 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           {/* <img
             src={heroMystery}
