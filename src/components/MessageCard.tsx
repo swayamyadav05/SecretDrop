@@ -132,6 +132,7 @@ export const MessageCard = ({
                   variant="ghost"
                   size="icon"
                   onClick={handleView}
+                  aria-label="View message"
                   className="mystery-glow h-8 w-8">
                   <Eye className="w-4 h-4" />
                 </Button>
@@ -186,6 +187,7 @@ export const MessageCard = ({
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDeleteConfirm}
+                    aria-label="Delete message"
                     className="bg-destructive hover:bg-destructive/80">
                     Delete
                   </AlertDialogAction>
