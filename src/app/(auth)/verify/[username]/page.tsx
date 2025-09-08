@@ -43,10 +43,13 @@ const VerifyAccountPage = () => {
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       setIsVerifying(true);
-      const response = await axios.post(`/api/verify-code/`, {
-        username: param.username,
-        code: data.code,
-      });
+      const response = await axios.post<ApiResponse>(
+        `/api/verify-code/`,
+        {
+          username: param.username,
+          code: data.code,
+        }
+      );
 
       toast({
         title: "Account Verified!",

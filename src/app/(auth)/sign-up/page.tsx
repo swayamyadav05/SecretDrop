@@ -54,7 +54,6 @@ const SignUpPage = () => {
     const checkUsernameUnique = async () => {
       if (username) {
         setIsCheckingUsername(true);
-        setUsernameMessage("");
         try {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`
@@ -77,21 +76,18 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
-    console.log("Hitting sign-up endpoint");
     try {
       const response = await axios.post<ApiResponse>(
         "/api/sign-up",
         data
       );
 
-      console.log("Response of sign-up api:", response);
-
       toast({
         title: "Account created!",
         description: response.data.message,
       });
 
-      router.replace(`/verify/${username}`);
+      router.replace(`/verify/${data.username}`);
     } catch (error) {
       console.error("Error is signing up the user", error);
       const axiosError = error as AxiosError<ApiResponse>;

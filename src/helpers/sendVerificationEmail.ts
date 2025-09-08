@@ -8,9 +8,20 @@ export async function sendVerificationEmail(
   verifyCode: string
 ): Promise<ApiResponse> {
   try {
+    // Check if API key exists
+    if (!process.env.RESEND_API_KEY) {
+      console.error(
+        "RESEND_API_KEY is not set in environment variables"
+      );
+      return {
+        success: false,
+        message: "Email service not configured",
+      };
+    }
+
     const emailData = {
-      from: "Acme <onboarding@resend.dev>",
-      to: email,
+      from: "SecretDrop <noreply@updates.swayamyadav.me>",
+      to: [email],
       subject: "SecretDrop Verification code",
       react: VerificationEmail({ username, otp: verifyCode }),
     };
