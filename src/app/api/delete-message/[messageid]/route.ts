@@ -7,9 +7,10 @@ import { Types } from "mongoose";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { messageid: string } }
+  { params }: { params: Promise<{ messageid: string }> }
 ) {
-  const messageId = params.messageid;
+  const resolvedParams = await params;
+  const messageId = resolvedParams.messageid;
   if (!messageId || !Types.ObjectId.isValid(messageId)) {
     return Response.json(
       { success: false, message: "Invalid message id" },
