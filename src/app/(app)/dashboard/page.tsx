@@ -15,7 +15,7 @@ import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import { Mail, MessageCircle, Users } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -83,7 +83,7 @@ const DashboardPage = () => {
         title: "Error",
         description:
           axiosError.response?.data.message ||
-          "Failed to fetch message settings",
+          "Failed to fetch message",
         variant: "destructive",
       });
     } finally {
@@ -104,7 +104,7 @@ const DashboardPage = () => {
           response.data.messages?.map((message) => ({
             _id: String(message._id),
             content: message.content,
-            createdAt: new Date(message.createdAt),
+            createdAt: String(message.createdAt),
             isRead: message.isRead,
           })) || [];
 
