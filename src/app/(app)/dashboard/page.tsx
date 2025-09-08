@@ -83,7 +83,7 @@ const DashboardPage = () => {
         title: "Error",
         description:
           axiosError.response?.data.message ||
-          "Failed to fetch message",
+          "Failed to fetch message setting",
         variant: "destructive",
       });
     } finally {
@@ -122,7 +122,7 @@ const DashboardPage = () => {
           title: "Error",
           description:
             axiosError.response?.data.message ||
-            "Failed to fetch message settings",
+            "Failed to fetch messages",
           variant: "destructive",
         });
       } finally {
@@ -180,7 +180,7 @@ const DashboardPage = () => {
                 <MessageCircle className="w-8 h-8 text-primary" />
                 <div>
                   <p className="text-2xl font-bold">
-                    {messages.length}
+                    {isLoading ? "..." : messages.length}
                   </p>
                   <p className="text-muted-foreground text-sm">
                     Total Messages
@@ -195,7 +195,9 @@ const DashboardPage = () => {
               <div className="flex items-center space-x-4">
                 <Mail className="w-8 h-8 text-primary" />
                 <div>
-                  <p className="text-2xl font-bold">{unreadCount}</p>
+                  <p className="text-2xl font-bold">
+                    {isLoading ? "..." : unreadCount}
+                  </p>
                   <p className="text-muted-foreground text-sm">
                     Unread Messages
                   </p>
@@ -238,7 +240,16 @@ const DashboardPage = () => {
             </div>
 
             <div className="space-y-4">
-              {messages.length > 0 ? (
+              {isLoading ? (
+                <Card className="message-card">
+                  <CardContent className="p-8 text-center">
+                    <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">
+                      Loading messages...
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : messages.length > 0 ? (
                 messages.map((message, index) => (
                   <MessageCard
                     key={message._id}
