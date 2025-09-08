@@ -28,8 +28,9 @@ const DashboardPage = () => {
 
   const { toast } = useToast();
 
-  const unreadCount =
-    messages.filter((message) => !message.isRead).length || 2;
+  const unreadCount = messages.filter(
+    (message) => !message.isRead
+  ).length;
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages(
@@ -59,6 +60,7 @@ const DashboardPage = () => {
 
   const form = useForm({
     resolver: zodResolver(acceptMessageSchema),
+    defaultValues: { acceptMessages: false },
   });
 
   const { register, watch, setValue } = form;
@@ -138,7 +140,7 @@ const DashboardPage = () => {
   }, [session, setValue, fetchAcceptMessage, fetchMessages]);
 
   const handleSwitchChange = async () => {
-    console.log("Clicked Switch");
+    setIsSwitchLoading(true);
     try {
       const response = await axios.post<ApiResponse>(
         "/api/accept-message",
@@ -155,9 +157,11 @@ const DashboardPage = () => {
         title: "Error",
         description:
           axiosError.response?.data.message ||
-          "Failed to fetch message settings",
+          "Failed to update message settings",
         variant: "destructive",
       });
+    } finally {
+      setIsSwitchLoading(false);
     }
   };
 

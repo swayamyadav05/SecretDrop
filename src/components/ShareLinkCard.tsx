@@ -1,7 +1,6 @@
 "use client";
 
 import { useToast } from "@/app/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Check, Copy, ExternalLink } from "lucide-react";
@@ -13,12 +12,17 @@ interface ShareLinkCardProps {
 }
 
 const ShareLinkCard = ({ username }: ShareLinkCardProps) => {
-  const router = useRouter();
-
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `${window.location.origin}/u/${username}`;
+  const profileUrl = React.useMemo(
+    () =>
+      new URL(
+        `/u/${encodeURIComponent(username)}`,
+        window.location.origin
+      ).toString(),
+    [username]
+  );
 
   const copyToClipboard = async () => {
     try {
@@ -37,10 +41,6 @@ const ShareLinkCard = ({ username }: ShareLinkCardProps) => {
         variant: "destructive",
       });
     }
-  };
-
-  const visitPublicLink = () => {
-    router.push(`/u/${username}`);
   };
 
   return (
@@ -78,13 +78,16 @@ const ShareLinkCard = ({ username }: ShareLinkCardProps) => {
         </div>
 
         <div className="flex space-x-2">
-          <Button
-            variant={"outline"}
-            onClick={visitPublicLink}
-            className="flex-1">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Visit Profile
-          </Button>
+          <a
+            href={`/u/${encodeURIComponent(username)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block flex-1">
+            <Button variant={"outline"} className="w-full">
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Visit Profile
+            </Button>
+          </a>
         </div>
 
         <div className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">

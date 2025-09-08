@@ -83,7 +83,7 @@ export const MessageCard = ({
   const handleDeleteConfirm = async () => {
     try {
       const response = await axios.delete<ApiResponse>(
-        `/api/delete-message/${message._id}`
+        `/api/delete-message/${encodeURIComponent(String(message._id))}`
       );
       toast({ title: response.data.message });
       onDelete(String(message._id));

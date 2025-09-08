@@ -10,8 +10,8 @@ export interface Message extends Document {
 export interface ClientMessage {
   _id: string;
   content: string;
-  createdAt: Date;
-  isRead?: boolean;
+  createdAt: string;
+  isRead: boolean;
 }
 
 const MessageSchema: Schema<Message> = new Schema({
