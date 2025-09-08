@@ -114,7 +114,6 @@ const VerifyAccountPage = () => {
                           value={field.value}
                           onChange={(value) => {
                             field.onChange(value);
-                            console.log("🔢 OTP changed:", value);
                           }}>
                           <InputOTPGroup>
                             <InputOTPSlot
@@ -153,7 +152,7 @@ const VerifyAccountPage = () => {
                 type="submit"
                 className="w-full mystery-glow"
                 disabled={isVerifying}>
-                {isVerifying ? "Verifying..." : "Subimt Code"}
+                {isVerifying ? "Verifying..." : "Submit Code"}
               </Button>
             </form>
           </Form>
