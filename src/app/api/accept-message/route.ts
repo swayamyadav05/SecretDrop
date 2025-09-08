@@ -23,7 +23,17 @@ export async function POST(request: Request) {
   const userId = user._id;
 
   try {
-    const { acceptMessage } = await request.json();
+    const payload = await request.json().catch(() => null);
+    if (!payload || typeof payload.acceptMessage !== "boolean") {
+      return Response.json(
+        {
+          success: false,
+          message: "acceptMessage must be a boolean",
+        },
+        { status: 400 }
+      );
+    }
+    const { acceptMessage } = payload;
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { isAcceptingMessages: acceptMessage },
@@ -44,7 +54,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message: "Message acceptance status updated successfully",
-        updatedUser,
+        isAcceptingMessages: updatedUser.isAcceptingMessages,
       },
       { status: 200 }
     );
@@ -63,7 +73,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(reques: Request) {
+export async function GET(request: Request) {
   await dbConnect();
 
   const session = await getServerSession(authOptions);

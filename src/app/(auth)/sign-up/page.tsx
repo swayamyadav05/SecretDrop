@@ -25,6 +25,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  LockIcon,
   MessageCircle,
 } from "lucide-react";
 
@@ -53,7 +54,6 @@ const SignUpPage = () => {
     const checkUsernameUnique = async () => {
       if (username) {
         setIsCheckingUsername(true);
-        setUsernameMessage("");
         try {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`
@@ -76,21 +76,18 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
-    console.log("Hitting sign-up endpoint");
     try {
       const response = await axios.post<ApiResponse>(
         "/api/sign-up",
         data
       );
 
-      console.log("Response of sign-up api:", response);
-
       toast({
         title: "Account created!",
         description: response.data.message,
       });
 
-      router.replace(`/verify/${username}`);
+      router.replace(`/verify/${data.username}`);
     } catch (error) {
       console.error("Error is signing up the user", error);
       const axiosError = error as AxiosError<ApiResponse>;
@@ -118,8 +115,9 @@ const SignUpPage = () => {
             Back
           </Button>
           <div className="flex justify-center mb-4">
-            <div>
-              <MessageCircle className="relative h-12 w-12 gradient-text fill-accent border-s-muted-foreground" />
+            <div className="flex items-center justify-center">
+              <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
+              <LockIcon className="flex  absolute h-5 w-5 pb-0.5 text-background" />
             </div>
           </div>
           <h1 className="text-3xl font-bold gradient-text mb-2">

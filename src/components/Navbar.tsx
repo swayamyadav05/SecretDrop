@@ -1,6 +1,11 @@
 "use client";
 
-import { Loader2, LogOut, MessageCircle } from "lucide-react";
+import {
+  Loader2,
+  LockIcon,
+  LogOut,
+  MessageCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { signOut, useSession } from "next-auth/react";
@@ -30,17 +35,18 @@ const Navbar = () => {
   return (
     <>
       {/* Navigation */}
-      <nav className="glass-effect fixed top-0 w-full z-50 py-4 px-6">
+      <nav className="fixed top-0 w-full z-50 py-4 px-6 bg-input">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {session ? (
             <>
               <div className="flex items-center space-x-1">
-                <div>
-                  <MessageCircle className="relative h-8 w-8 gradient-text fill-accent" />
+                <div className="flex items-center justify-center">
+                  <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
+                  <LockIcon className="flex  absolute h-5 w-5 pb-0.5 text-background" />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold gradient-text">
-                    Welcome to Secret Drop, {user?.username}
+                    Welcome, {user?.username}
                   </h1>
                 </div>
               </div>
@@ -67,8 +73,9 @@ const Navbar = () => {
           ) : (
             <>
               <div className="flex items-center space-x-1">
-                <div>
-                  <MessageCircle className="relative h-8 w-8 fill-accent gradient-text " />
+                <div className="flex items-center justify-center">
+                  <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
+                  <LockIcon className="flex absolute h-5 w-5 pb-0.5 text-background" />
                 </div>
                 <h1 className="text-2xl font-bold gradient-text">
                   Secret Drop

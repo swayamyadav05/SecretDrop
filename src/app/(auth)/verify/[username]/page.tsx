@@ -43,10 +43,13 @@ const VerifyAccountPage = () => {
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       setIsVerifying(true);
-      const response = await axios.post(`/api/verify-code/`, {
-        username: param.username,
-        code: data.code,
-      });
+      const response = await axios.post<ApiResponse>(
+        `/api/verify-code/`,
+        {
+          username: param.username,
+          code: data.code,
+        }
+      );
 
       toast({
         title: "Account Verified!",
@@ -111,7 +114,6 @@ const VerifyAccountPage = () => {
                           value={field.value}
                           onChange={(value) => {
                             field.onChange(value);
-                            console.log("🔢 OTP changed:", value);
                           }}>
                           <InputOTPGroup>
                             <InputOTPSlot
@@ -150,7 +152,7 @@ const VerifyAccountPage = () => {
                 type="submit"
                 className="w-full mystery-glow"
                 disabled={isVerifying}>
-                {isVerifying ? "Verifying..." : "Subimt Code"}
+                {isVerifying ? "Verifying..." : "Submit Code"}
               </Button>
             </form>
           </Form>
