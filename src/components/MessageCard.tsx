@@ -26,11 +26,11 @@ import { Badge } from "@/components/ui/badge";
 import { MessageCircle } from "lucide-react";
 import axios from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
-import { Message } from "@/model/User";
+import { ClientMessage } from "@/model/User";
 import { useToast } from "@/app/hooks/use-toast";
 
 interface MessageCardProps {
-  message: Message;
+  message: ClientMessage;
   onDelete: (messageId: string) => void;
   onMarkAsRead: (messageId: string) => void;
   className?: string;

@@ -21,6 +21,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  LockIcon,
   MessageCircle,
 } from "lucide-react";
 import { signInSchema } from "@/schemas/signInSchema";
@@ -91,8 +92,9 @@ const SignInPage = () => {
             Back
           </Button>
           <div className="flex justify-center mb-4">
-            <div>
-              <MessageCircle className="relative h-12 w-12 gradient-text fill-accent" />
+            <div className="flex items-center justify-center">
+              <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
+              <LockIcon className="flex  absolute h-5 w-5 pb-0.5 text-background" />
             </div>
           </div>
           <h1 className="text-3xl font-bold gradient-text mb-2">

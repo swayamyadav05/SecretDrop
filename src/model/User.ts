@@ -6,6 +6,14 @@ export interface Message extends Document {
   isRead: boolean;
 }
 
+// Client-side message type without Mongoose document methods
+export interface ClientMessage {
+  _id: string;
+  content: string;
+  createdAt: Date;
+  isRead?: boolean;
+}
+
 const MessageSchema: Schema<Message> = new Schema({
   content: {
     type: String,
