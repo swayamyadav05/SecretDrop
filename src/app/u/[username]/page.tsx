@@ -26,6 +26,7 @@ import {
   MessageCircle,
   MessageCircleReply,
   MessageSquareLock,
+  RefreshCw,
   Send,
 } from "lucide-react";
 import Link from "next/link";
@@ -112,11 +113,15 @@ const MessagePage = () => {
       );
 
       if (response.data?.success) {
-        const suggestionsArray = response.data.suggestions
-          ?.split("||")
-          .map((s: string) => s.trim());
-
-        setSuggestions(suggestionsArray || []);
+        const rawSuggestions = response.data.suggestions ?? "";
+        const suggestionsArray = rawSuggestions
+          .split("||")
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+        const uniqueSuggestions = Array.from(
+          new Set(suggestionsArray)
+        ).slice(0, 3);
+        setSuggestions(uniqueSuggestions || []);
       }
     } catch (error) {
       toast({
@@ -356,8 +361,17 @@ const MessagePage = () => {
                         </>
                       ) : (
                         <>
-                          <Lightbulb className="h-4 w-4 mr-1" />
-                          Get Suggestions
+                          {suggestions.length > 0 ? (
+                            <>
+                              <RefreshCw className="h-4 w-4 mr-1" />
+                              Refresh
+                            </>
+                          ) : (
+                            <>
+                              <Lightbulb className="h-4 w-4 mr-1" />
+                              Get Suggestions
+                            </>
+                          )}
                         </>
                       )}
                     </Button>
@@ -379,7 +393,7 @@ const MessagePage = () => {
                             handleSuggestionClick(suggestion)
                           }>
                           <div className="text-sm leading-relaxed">
-                            {suggestion}
+                            • {suggestion}
                           </div>
                         </Button>
                       ))}

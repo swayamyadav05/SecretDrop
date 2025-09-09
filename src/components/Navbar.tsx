@@ -9,7 +9,6 @@ import {
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { signOut, useSession } from "next-auth/react";
-import { User } from "next-auth";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
@@ -18,8 +17,6 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   const router = useRouter();
-
-  const user: User = session?.user as User;
 
   const handleLogout = async () => {
     setIsLogginOut(true);
@@ -40,8 +37,8 @@ const Navbar = () => {
           {session ? (
             <>
               <div className="flex items-center space-x-3">
-                <div className="flex items-center justify-center">
-                  <MessageCircle className="relative h-8 w-8 text-primary/80" />
+                <div className="relative flex items-center justify-center">
+                  <MessageCircle className="h-8 w-8 text-primary/80" />
                 </div>
                 <div>
                   <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -75,9 +72,8 @@ const Navbar = () => {
           ) : (
             <>
               <div className="flex items-center space-x-3">
-                <div className="flex items-center justify-center">
-                  <MessageCircle className="relative h-8 w-8 text-primary/80" />
-                  <LockIcon className="flex absolute h-3 w-3 text-background" />
+                <div className="relative flex items-center justify-center">
+                  <MessageCircle className="h-8 w-8 text-primary/80" />
                 </div>
                 <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   SecretDrop

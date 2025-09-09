@@ -1,9 +1,16 @@
 import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
-import { generateText } from "ai";
+import { generateObject, generateText } from "ai";
 import { NextResponse } from "next/server";
+import z from "zod";
 
-export const maxDuration = 30;
+const schema = z.object({
+  suggestions: z.tuple([
+    z.string().min(1),
+    z.string().min(1),
+    z.string().min(1),
+  ]),
+});
 
 export async function POST() {
   try {
@@ -41,18 +48,14 @@ Avoid: Personal questions, sensitive topics, anything that feels invasive or ina
     // Validate and fix the output
     const suggestions = result.text.trim();
 
-    // Split by || and clean up
     let suggestionsArray = suggestions
       .split("||")
       .map((s) => s.trim())
-      .filter((s) => s.length > 0); // Remove empty suggestions
+      .filter((s) => s.length > 0);
 
-    // Ensure exactly 3 suggestions
     if (suggestionsArray.length > 3) {
-      // Take only first 3 if too many
       suggestionsArray = suggestionsArray.slice(0, 3);
     } else if (suggestionsArray.length < 3) {
-      // Log warning if too few (but still return what we have)
       console.warn(
         `Only ${suggestionsArray.length} suggestions generated instead of 3`
       );

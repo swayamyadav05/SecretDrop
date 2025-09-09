@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, MessageSquareLock } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -30,7 +30,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/"
                   className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Home
                 </Link>
@@ -46,7 +46,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/contact"
                   className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Contact Us
                 </Link>
