@@ -35,31 +35,33 @@ const Navbar = () => {
   return (
     <>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 py-4 px-6 bg-input">
+      <nav className="fixed top-0 w-full z-50 py-3 px-6 bg-background/80 backdrop-blur-md border-b border-border/40">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {session ? (
             <>
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center">
-                  <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
-                  <LockIcon className="flex  absolute h-5 w-5 pb-0.5 text-background" />
+                  <MessageCircle className="relative h-8 w-8 text-primary/80" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold gradient-text">
-                    Welcome, {user?.username}
+                  <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                    SecretDrop
                   </h1>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <Button
-                  variant="destructive"
+                  variant="ghost"
+                  size="sm"
                   disabled={isLogginOut}
                   onClick={() => {
                     handleLogout();
-                  }}>
+                  }}
+                  className="text-muted-foreground hover:text-destructive transition-colors">
                   {isLogginOut ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing out...
                     </>
                   ) : (
                     <>
@@ -72,24 +74,27 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-3">
                 <div className="flex items-center justify-center">
-                  <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
-                  <LockIcon className="flex absolute h-5 w-5 pb-0.5 text-background" />
+                  <MessageCircle className="relative h-8 w-8 text-primary/80" />
+                  <LockIcon className="flex absolute h-3 w-3 text-background" />
                 </div>
-                <h1 className="text-2xl font-bold gradient-text">
-                  Secret Drop
+                <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  SecretDrop
                 </h1>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex space-x-3">
                 <Button
                   variant="ghost"
-                  onClick={() => router.push("/sign-in")}>
+                  size="sm"
+                  onClick={() => router.push("/sign-in")}
+                  className="text-muted-foreground hover:text-foreground transition-colors">
                   Sign In
                 </Button>
                 <Button
+                  size="sm"
                   onClick={() => router.push("/sign-up")}
-                  className="mystery-glow">
+                  className="bg-primary/90 hover:bg-primary text-primary-foreground transition-all">
                   Get Started
                 </Button>
               </div>

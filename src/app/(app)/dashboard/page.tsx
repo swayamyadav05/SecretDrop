@@ -137,7 +137,7 @@ const DashboardPage = () => {
     if (!session || !session.user) return;
     fetchMessages();
     fetchAcceptMessage();
-  }, [session, setValue, fetchAcceptMessage, fetchMessages]);
+  }, [session, fetchAcceptMessage, fetchMessages]);
 
   const handleSwitchChange = async () => {
     setIsSwitchLoading(true);
@@ -170,11 +170,19 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-6xl mx-auto pt-6">
+    <div className="min-h-screen px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-4">
+          <h1 className="text-lg font-medium text-foreground/90">
+            Welcome,{" "}
+            <span className="text-primary font-semibold">
+              {user?.username}
+            </span>
+          </h1>
+        </div>
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="message-card">
+          <Card className="message-card h-fit">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
                 <MessageCircle className="w-8 h-8 text-primary" />

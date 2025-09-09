@@ -1,24 +1,69 @@
 import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST() {
   try {
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messagin platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal thems that encourage friendly interaction. For example, your output should be stuctured like this: 'What's a hobby you've recently started?||If you could have a dinner with any historical figure, who would it be?||What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
+    const prompt = `Create three anonymous message suggestions for SecretDrop, a platform where people send honest, anonymous feedback and messages. These should be conversation starters that encourage genuine, thoughtful communication.
+
+Format: Three suggestions separated by '||'
+
+Categories to include:
+- Honest feedback or appreciation
+- Personal thoughts or confessions  
+- Constructive observations
+
+Tone: Encouraging, respectful, and safe for anonymous sharing
+Audience: People wanting to share something meaningful but privately
+
+Examples of good suggestions:
+'I've always wanted to tell you that your positive energy really brightens up the room||Here's something I've noticed about you that I think you should know...||I wanted to share some honest feedback that might help you grow'
+
+Create suggestions that:
+- Start conversations rather than ask questions
+- Feel safe to share anonymously  
+- Encourage meaningful, honest communication
+- Are appropriate for diverse relationships (friends, colleagues, etc.)
+
+Avoid: Personal questions, sensitive topics, anything that feels invasive or inappropriate for anonymous messaging.`;
 
     const result = await generateText({
-      model: openai("gpt-3.5-turbo"),
-      maxOutputTokens: 200,
+      // model: openai("gpt-3.5-turbo"),
+      model: google("gemini-1.5-flash"),
+      maxOutputTokens: 100,
+      temperature: 0.8,
       prompt,
     });
 
+    // Validate and fix the output
+    const suggestions = result.text.trim();
+
+    // Split by || and clean up
+    let suggestionsArray = suggestions
+      .split("||")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0); // Remove empty suggestions
+
+    // Ensure exactly 3 suggestions
+    if (suggestionsArray.length > 3) {
+      // Take only first 3 if too many
+      suggestionsArray = suggestionsArray.slice(0, 3);
+    } else if (suggestionsArray.length < 3) {
+      // Log warning if too few (but still return what we have)
+      console.warn(
+        `Only ${suggestionsArray.length} suggestions generated instead of 3`
+      );
+    }
+
+    // Rejoin with || separator
+    const validatedSuggestions = suggestionsArray.join("||");
+
     return NextResponse.json({
       success: true,
-      suggestions: result.text,
+      suggestions: validatedSuggestions,
       usage: result.usage,
     });
   } catch (error) {
