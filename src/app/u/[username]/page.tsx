@@ -14,6 +14,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { messageSchema } from "@/schemas/messageSchema";
@@ -28,7 +29,7 @@ import {
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { z } from "zod";
 
 const MessagePage = () => {
   const params = useParams<{ username: string }>();
@@ -46,20 +47,10 @@ const MessagePage = () => {
   const content = form.watch("content");
 
   const onSubmit = async (data: z.infer<typeof messageSchema>) => {
-    console.log("Passed content:", data);
-    if (!data.content.trim()) {
-      toast({
-        title: "Empty message",
-        description: "Please write a message before sending",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       setIsSubmitting(true);
 
-      const respone = await axios.post<ApiResponse>(
+      const response = await axios.post<ApiResponse>(
         "/api/send-message",
         {
           username: params.username,
@@ -67,16 +58,24 @@ const MessagePage = () => {
         }
       );
 
-      console.log("Response from send-message:", respone);
+      if (!response.data?.success) {
+        toast({
+          title: "Could not send message",
+          description:
+            response.data?.message ?? "Please try again later.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
-        title: "Message sent",
+        title: "Message Sent",
         description:
-          "Your anonymous message has been sent successfully",
+          "Your anonymous message has been sent successfully!",
       });
 
       form.reset();
     } catch (error) {
-      console.log("Error sending message:", error);
       toast({
         title: "Error",
         description:
@@ -134,8 +133,13 @@ const MessagePage = () => {
                               placeholder="Share your thoughts, feedback, or anything you'd like to say anonymously..."
                               className="min-h-32 w-full p-4 rounded-md border-border/50 bg-muted/50 text-foreground focus:border-primary/20 resize-none"
                               maxLength={300}
+                              aria-invalid={
+                                !!form.formState.errors.content
+                              }
+                              disabled={form.formState.isSubmitting}
                             />
                           </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
