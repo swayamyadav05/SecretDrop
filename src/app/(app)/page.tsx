@@ -129,13 +129,6 @@ const Landing = () => {
           </Card>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border/50">
-        <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-          <p>&copy; 2025 Secret Drop. Built for honest feedback.</p>
-        </div>
-      </footer>
     </div>
   );
 };

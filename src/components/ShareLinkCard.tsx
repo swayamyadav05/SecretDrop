@@ -85,7 +85,7 @@ const ShareLinkCard = ({ username }: ShareLinkCardProps) => {
             className="inline-block flex-1">
             <Button variant={"outline"} className="w-full">
               <ExternalLink className="w-4 h-4 mr-2" />
-              Visit Profile
+              Visit Public Link
             </Button>
           </a>
         </div>
