@@ -216,11 +216,11 @@ const DashboardPage = () => {
         })) || [];
 
       const currentIds = new Set(messages.map((m) => m._id));
-      const freshId = new Set(freshMessages.map((m) => m._id));
+      const freshIds = new Set(freshMessages.map((m) => m._id));
       const newOnes = freshMessages.filter(
         (m) => !currentIds.has(m._id)
       );
-      const removed = messages.filter((m) => !freshId.has(m._id));
+      const removed = messages.filter((m) => !freshIds.has(m._id));
 
       if (newOnes.length || removed.length) {
         setMessages(freshMessages);
@@ -238,7 +238,7 @@ const DashboardPage = () => {
     } finally {
       setIsPolling(false);
     }
-  }, [isPolling, isLoading, messages.length, toast]);
+  }, [isPolling, isLoading, messages, toast]);
 
   useEffect(() => {
     if (!session?.user) return;
