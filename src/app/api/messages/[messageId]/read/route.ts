@@ -1,17 +1,14 @@
-import { Message } from "../../../../../model/User";
 import dbConnect from "@/lib/dbConnect";
 import { getServerSession, User } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]/options";
 import { Types } from "mongoose";
 import UserModel from "@/model/User";
-import { messageSchema } from "@/schemas/messageSchema";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ messageId: string }> }
+  { params }: { params: { messageId: string } }
 ) {
-  const resolvedParams = await params;
-  const messageId = resolvedParams.messageId;
+  const messageId = params.messageId;
   if (!messageId || !Types.ObjectId.isValid(messageId)) {
     return Response.json(
       { success: false, message: "Invalid message id" },
@@ -33,9 +30,8 @@ export async function PATCH(
     );
   }
 
-  const userId = new Types.ObjectId(user._id);
-
   try {
+    const userId = new Types.ObjectId(user._id);
     const updatedUser = await UserModel.findOneAndUpdate(
       {
         _id: userId,
@@ -69,7 +65,7 @@ export async function PATCH(
 
     return Response.json(
       {
-        success: true,
+        success: false,
         message: "Internal server error",
       },
       { status: 500 }

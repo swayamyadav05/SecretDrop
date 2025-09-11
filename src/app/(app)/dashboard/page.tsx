@@ -52,6 +52,9 @@ const DashboardPage = () => {
   };
 
   const handleMarkAsRead = async (messageId: string) => {
+    const wasRead =
+      messages.find((m) => m._id.toString() === messageId)?.isRead ??
+      false;
     setMessages((prev) =>
       prev.map((msg) =>
         msg._id.toString() === messageId
@@ -71,7 +74,7 @@ const DashboardPage = () => {
       setMessages((prev) =>
         prev.map((msg) =>
           msg._id.toString() === messageId
-            ? { ...msg, isRead: false }
+            ? { ...msg, isRead: wasRead }
             : msg
         )
       );
@@ -125,7 +128,7 @@ const DashboardPage = () => {
     try {
       const response = await axios.post<ApiResponse>(
         "/api/accept-message",
-        { acceptMessage: !acceptMessages }
+        { acceptMessages: !acceptMessages }
       );
       setValue("acceptMessages", !acceptMessages);
       toast({
@@ -156,7 +159,7 @@ const DashboardPage = () => {
       messages.length > 0
     ) {
       console.log(
-        `Using caches messages (age: ${Math.round(cacheAge / 1000)}s)`
+        `Using cached messages (age: ${Math.round(cacheAge / 1000)}s)`
       );
       return;
     }
@@ -234,10 +237,6 @@ const DashboardPage = () => {
     smartFetchMessages();
     fetchAcceptMessage();
   }, [session?.user]);
-
-  // if (!session || !session.user) {
-  //   return
-  // }
 
   useEffect(() => {
     if (!session?.user || messages.length === 0) return;

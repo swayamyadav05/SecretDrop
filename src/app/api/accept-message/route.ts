@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
   try {
     const payload = await request.json().catch(() => null);
-    if (!payload || typeof payload.acceptMessage !== "boolean") {
+    if (!payload || typeof payload.acceptMessages !== "boolean") {
       return Response.json(
         {
           success: false,

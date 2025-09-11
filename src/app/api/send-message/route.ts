@@ -8,11 +8,30 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const body = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid JSON",
+        },
+        { status: 400 }
+      );
+    }
 
-    const validatedData = messageRequestSchema.parse(body);
+    const parsed = messageRequestSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid input",
+          errors: parsed.error.issues,
+        },
+        { status: 400 }
+      );
+    }
 
-    const { username, content } = validatedData;
+    const { username, content } = parsed.data;
 
     const user = await UserModel.findOne({ username });
     if (!user) {
@@ -57,7 +76,7 @@ export async function POST(request: Request) {
         {
           success: false,
           message: "Invalid input",
-          errors: error.errors,
+          errors: error.issues,
         },
         { status: 400 }
       );

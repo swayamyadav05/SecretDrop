@@ -100,11 +100,19 @@ const MessagePage = () => {
           title: "Rate Limit Exceeded",
           description:
             axiosError.response.data?.message ||
-            "Too many request. Please wait before trying again.",
+            "Too many requests. Please wait before trying again.",
           variant: "destructive",
         });
         return;
       }
+
+      toast({
+        title: "Error sending message",
+        description:
+          axiosError.response?.data?.message ??
+          "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }

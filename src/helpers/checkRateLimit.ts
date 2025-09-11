@@ -21,22 +21,28 @@ const RATE_LIMITS: {
 };
 
 export function getRealIP(request: NextRequest) {
-  const ip = (
-    request.headers.get("x-forwarded-for") ?? "127.0.0.1"
-  ).split(",")[0];
-  return ip;
+  const xff = request.headers.get("x-forwarded-for") ?? "";
+  const ip =
+    (request as { ip?: string }).ip ??
+    request.headers.get("x-real-ip") ??
+    (xff ? xff.split(",")[0] : undefined) ??
+    "127.0.0.1";
+
+  return ip.trim();
 }
 
 export function checkRateLimit(request: NextRequest): {
   limited: boolean;
   remaining?: number;
+  limit: number;
+  resetMs: number;
 } {
   const ip = getRealIP(request);
   const endpoint = request.nextUrl.pathname;
 
   const config = RATE_LIMITS[endpoint];
   if (!config) {
-    return { limited: false };
+    return { limited: false, limit: 0, resetMs: 0 };
   }
 
   const now = Date.now();
@@ -55,13 +61,23 @@ export function checkRateLimit(request: NextRequest): {
     ipData[endpoint] = entry;
   }
 
+  const resetAt = entry.windowStart + config.window;
+  const resetMs = Math.max(0, resetAt - now);
+
   if (entry.count >= config.limit) {
-    return { limited: true, remaining: 0 };
+    return {
+      limited: true,
+      remaining: 0,
+      limit: config.limit,
+      resetMs,
+    };
   }
 
   entry.count++;
   return {
     limited: false,
     remaining: config.limit - entry.count,
+    limit: config.limit,
+    resetMs,
   };
 }

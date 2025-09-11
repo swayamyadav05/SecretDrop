@@ -14,26 +14,63 @@ export async function middleware(request: NextRequest) {
     "/api/verify-code",
   ];
 
+  // if (
+  //   rateLimitedEndpoints.some((endpoint) =>
+  //     request.nextUrl.pathname.startsWith(endpoint)
+  //   )
+  // ) {
+  //   const rateLimitResult = checkRateLimit(request);
+  //   if (rateLimitResult.limited) {
+  //     return new NextResponse(
+  //       JSON.stringify({
+  //         error: "Too many requests",
+  //         message: "Rate limit exceeded. Please try again later.",
+  //       }),
+  //       {
+  //         status: 429,
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
+  //   }
+  // }
+
   if (
+    request.method !== "OPTIONS" &&
     rateLimitedEndpoints.some((endpoint) =>
       request.nextUrl.pathname.startsWith(endpoint)
     )
   ) {
-    const rateLimitResult = checkRateLimit(request);
-    if (rateLimitResult.limited) {
+    const {
+      limited,
+      remaining = 0,
+      limit,
+      resetMs,
+    } = checkRateLimit(request);
+
+    if (limited) {
+      const retryAfterSeconds = Math.ceil(resetMs / 1000);
       return new NextResponse(
         JSON.stringify({
+          success: false,
           error: "Too many requests",
-          message: "Rate limit exceeded. Please try again later.",
+          message: "Rate limit exceeded. Please try again later",
+          limit,
+          remaining,
+          reset: retryAfterSeconds,
         }),
         {
           status: 429,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(retryAfterSeconds),
+            "X-RateLimit-Limit": String(limit),
+            "X-RateLimit-Remaining": String(remaining),
+            "X-RateLimit-Reset": String(retryAfterSeconds),
+          },
         }
       );
     }
   }
-
   // Authentication logic - only for pages that need it
   if (
     url.pathname.startsWith("/dashboard") ||
