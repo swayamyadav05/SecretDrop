@@ -215,15 +215,23 @@ const DashboardPage = () => {
           isRead: message.isRead,
         })) || [];
 
-      if (freshMessages.length > messages.length) {
-        const newCount = freshMessages.length - messages.length;
-        setMessages(freshMessages);
+      const currentIds = new Set(messages.map((m) => m._id));
+      const freshId = new Set(freshMessages.map((m) => m._id));
+      const newOnes = freshMessages.filter(
+        (m) => !currentIds.has(m._id)
+      );
+      const removed = messages.filter((m) => !freshId.has(m._id));
 
-        toast({
-          title: `${newCount} new message${newCount > 1 ? "s" : ""}`,
-          description: "You have received new secret messages!",
-          duration: 4000,
-        });
+      if (newOnes.length || removed.length) {
+        setMessages(freshMessages);
+        if (newOnes.length) {
+          const newCount = newOnes.length;
+          toast({
+            title: `${newCount} new message${newCount > 1 ? "s" : ""}`,
+            description: "You have received new secret messages!",
+            duration: 4000,
+          });
+        }
       }
     } catch (error) {
       console.log("Background polling failed:", error);
