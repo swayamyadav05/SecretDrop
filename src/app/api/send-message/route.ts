@@ -1,12 +1,38 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { Message } from "@/model/User";
+import { messageRequestSchema } from "@/schemas/messageRequestSchema";
+import z from "zod";
 
 export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { username, content } = await request.json();
+    const body = await request.json().catch(() => null);
+    if (!body) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid JSON",
+        },
+        { status: 400 }
+      );
+    }
+
+    const parsed = messageRequestSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid input",
+          errors: parsed.error.issues,
+        },
+        { status: 400 }
+      );
+    }
+
+    const { username, content } = parsed.data;
+
     const user = await UserModel.findOne({ username });
     if (!user) {
       return Response.json(
@@ -45,7 +71,16 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.log("Error adding messages:", error);
+    if (error instanceof z.ZodError) {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid input",
+          errors: error.issues,
+        },
+        { status: 400 }
+      );
+    }
     return Response.json(
       {
         success: false,
