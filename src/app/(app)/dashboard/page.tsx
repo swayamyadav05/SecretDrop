@@ -199,7 +199,7 @@ const DashboardPage = () => {
   };
 
   const fetchNewMessages = useCallback(async () => {
-    if (isPolling || isLoading || messages.length === 0) return;
+    if (isPolling || isLoading) return;
 
     setIsPolling(true);
     try {
@@ -239,7 +239,7 @@ const DashboardPage = () => {
   }, [session?.user]);
 
   useEffect(() => {
-    if (!session?.user || messages.length === 0) return;
+    if (!session?.user) return;
 
     const pollInterval = setInterval(() => {
       if (document.visibilityState === "visible") {
