@@ -40,10 +40,8 @@ const DashboardPage = () => {
   ).length;
 
   const handleDeleteMessage = (messageId: string) => {
-    setMessages(
-      messages.filter(
-        (message) => message._id.toString() !== messageId
-      )
+    setMessages((prev) =>
+      prev.filter((message) => message._id.toString() !== messageId)
     );
     toast({
       title: "Message deleted",
@@ -55,6 +53,9 @@ const DashboardPage = () => {
     const wasRead =
       messages.find((m) => m._id.toString() === messageId)?.isRead ??
       false;
+
+    if (wasRead) return;
+
     setMessages((prev) =>
       prev.map((msg) =>
         msg._id.toString() === messageId
@@ -184,7 +185,6 @@ const DashboardPage = () => {
       setLastFetch(now);
       setIsInitialLoad(false);
     } catch (error) {
-      setIsLoading(false);
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: "Error",
@@ -256,7 +256,7 @@ const DashboardPage = () => {
     }, POLL_INTERVAL);
 
     return () => clearInterval(pollInterval);
-  }, [session?.user, messages.length, fetchNewMessages]);
+  }, [session?.user, fetchNewMessages]);
 
   return (
     <div className="min-h-screen px-6">
