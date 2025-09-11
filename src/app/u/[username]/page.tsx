@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { messageSchema } from "@/schemas/messageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Lightbulb,
   MessageCircle,
@@ -94,12 +94,17 @@ const MessagePage = () => {
 
       form.reset();
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          "There was an error sending your message. Please try again.",
-        variant: "destructive",
-      });
+      const axiosError = error as AxiosError<ApiResponse>;
+      if (axiosError.response?.status === 429) {
+        toast({
+          title: "Rate Limit Exceeded",
+          description:
+            axiosError.response.data?.message ||
+            "Too many request. Please wait before trying again.",
+          variant: "destructive",
+        });
+        return;
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -26,6 +26,13 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 
+  const [lastFetch, setLastFetch] = useState<number>(0);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const CACHE_DURATION = 2 * 60 * 1000;
+
+  const [isPolling, setIsPolling] = useState(false);
+  const POLL_INTERVAL = 5000;
+
   const { toast } = useToast();
 
   const unreadCount = messages.filter(
@@ -44,7 +51,7 @@ const DashboardPage = () => {
     });
   };
 
-  const handleMarkAsRead = (messageId: string) => {
+  const handleMarkAsRead = async (messageId: string) => {
     setMessages((prev) =>
       prev.map((msg) =>
         msg._id.toString() === messageId
@@ -52,6 +59,28 @@ const DashboardPage = () => {
           : msg
       )
     );
+
+    try {
+      const response = await axios.patch(
+        `/api/messages/${messageId}/read`
+      );
+      if (!response.data.success) {
+        throw new Error("Failed to mark as read");
+      }
+    } catch (error) {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg._id.toString() === messageId
+            ? { ...msg, isRead: false }
+            : msg
+        )
+      );
+      toast({
+        title: "Error",
+        description: "Failed to mark message as read",
+        variant: "destructive",
+      });
+    }
   };
 
   const { data: session } = useSession();
@@ -91,54 +120,6 @@ const DashboardPage = () => {
     }
   }, [setValue, toast]);
 
-  const fetchMessages = useCallback(
-    async (refresh: boolean = false) => {
-      setIsLoading(true);
-      setIsSwitchLoading(false);
-      try {
-        const response = await axios.get<ApiResponse>(
-          "/api/get-messages"
-        );
-
-        const clientMessages: ClientMessage[] =
-          response.data.messages?.map((message) => ({
-            _id: String(message._id),
-            content: message.content,
-            createdAt: String(message.createdAt),
-            isRead: message.isRead,
-          })) || [];
-
-        setMessages(clientMessages);
-
-        if (refresh) {
-          toast({
-            title: "Refreshed Messages",
-            description: "Showing latest messages",
-          });
-        }
-      } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>;
-        toast({
-          title: "Error",
-          description:
-            axiosError.response?.data.message ||
-            "Failed to fetch messages",
-          variant: "destructive",
-        });
-      } finally {
-        setIsSwitchLoading(false);
-        setIsLoading(false);
-      }
-    },
-    [setIsLoading, setMessages, toast]
-  );
-
-  useEffect(() => {
-    if (!session || !session.user) return;
-    fetchMessages();
-    fetchAcceptMessage();
-  }, [session, fetchAcceptMessage, fetchMessages]);
-
   const handleSwitchChange = async () => {
     setIsSwitchLoading(true);
     try {
@@ -165,9 +146,110 @@ const DashboardPage = () => {
     }
   };
 
-  if (!session || !session.user) {
-    return <div>Please Login</div>;
-  }
+  const smartFetchMessages = async () => {
+    const now = Date.now();
+    const cacheAge = now - lastFetch;
+
+    if (
+      !isInitialLoad &&
+      cacheAge < CACHE_DURATION &&
+      messages.length > 0
+    ) {
+      console.log(
+        `Using caches messages (age: ${Math.round(cacheAge / 1000)}s)`
+      );
+      return;
+    }
+
+    console.log("Fetching fresh messages...");
+
+    try {
+      setIsLoading(true);
+      const response = await axios.get<ApiResponse>(
+        "/api/get-messages"
+      );
+
+      const clientMessages: ClientMessage[] =
+        response.data.messages?.map((message) => ({
+          _id: String(message._id),
+          content: message.content,
+          createdAt: String(message.createdAt),
+          isRead: message.isRead,
+        })) || [];
+
+      setMessages(clientMessages);
+      setLastFetch(now);
+      setIsInitialLoad(false);
+    } catch (error) {
+      setIsLoading(false);
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast({
+        title: "Error",
+        description:
+          axiosError.response?.data.message ||
+          "Failed to fetch messages",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchNewMessages = useCallback(async () => {
+    if (isPolling || isLoading || messages.length === 0) return;
+
+    setIsPolling(true);
+    try {
+      const response = await axios.get<ApiResponse>(
+        "/api/get-messages"
+      );
+
+      const freshMessages: ClientMessage[] =
+        response.data.messages?.map((message) => ({
+          _id: String(message._id),
+          content: message.content,
+          createdAt: String(message.createdAt),
+          isRead: message.isRead,
+        })) || [];
+
+      if (freshMessages.length > messages.length) {
+        const newCount = freshMessages.length - messages.length;
+        setMessages(freshMessages);
+
+        toast({
+          title: `${newCount} new message${newCount > 1 ? "s" : ""}`,
+          description: "You have received new secret messages!",
+          duration: 4000,
+        });
+      }
+    } catch (error) {
+      console.log("Background polling failed:", error);
+    } finally {
+      setIsPolling(false);
+    }
+  }, [isPolling, isLoading, messages.length, toast]);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    smartFetchMessages();
+    fetchAcceptMessage();
+  }, [session?.user]);
+
+  // if (!session || !session.user) {
+  //   return
+  // }
+
+  useEffect(() => {
+    if (!session?.user || messages.length === 0) return;
+
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchNewMessages();
+      }
+    }, POLL_INTERVAL);
+
+    return () => clearInterval(pollInterval);
+  }, [session?.user, messages.length, fetchNewMessages]);
 
   return (
     <div className="min-h-screen px-6">

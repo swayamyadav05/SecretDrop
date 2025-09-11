@@ -1,16 +1,6 @@
-import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
-import { generateObject, generateText } from "ai";
+import { generateText } from "ai";
 import { NextResponse } from "next/server";
-import z from "zod";
-
-const schema = z.object({
-  suggestions: z.tuple([
-    z.string().min(1),
-    z.string().min(1),
-    z.string().min(1),
-  ]),
-});
 
 export async function POST() {
   try {
