@@ -6,9 +6,9 @@ import UserModel from "@/model/User";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { messageId: string } }
+  { params }: { params: Promise<{ messageId: string }> }
 ) {
-  const messageId = params.messageId;
+  const { messageId } = await params;
   if (!messageId || !Types.ObjectId.isValid(messageId)) {
     return Response.json(
       { success: false, message: "Invalid message id" },

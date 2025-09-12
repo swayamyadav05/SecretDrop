@@ -21,12 +21,10 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  LockIcon,
   MessageCircle,
 } from "lucide-react";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
-import Brand from "@/components/Brand";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);

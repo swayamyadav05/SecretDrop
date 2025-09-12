@@ -87,7 +87,7 @@ export const MessageCard = ({
       );
       toast({ title: response.data.message });
       onDelete(String(message._id));
-    } catch (err: unknown) {
+    } catch {
       toast({
         title: "Failed to delete message",
         variant: "destructive",

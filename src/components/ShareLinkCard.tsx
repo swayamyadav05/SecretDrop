@@ -14,17 +14,22 @@ interface ShareLinkCardProps {
 const ShareLinkCard = ({ username }: ShareLinkCardProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [profileUrl, setProfileUrl] = useState("");
 
-  const profileUrl = React.useMemo(
-    () =>
-      new URL(
-        `/u/${encodeURIComponent(username)}`,
-        window.location.origin
-      ).toString(),
-    [username]
-  );
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && username) {
+      setProfileUrl(
+        new URL(
+          `/u/${encodeURIComponent(username)}`,
+          window.location.origin
+        ).toString()
+      );
+    }
+  }, [username]);
 
   const copyToClipboard = async () => {
+    if (!profileUrl) return;
+
     try {
       await navigator.clipboard.writeText(profileUrl);
       setCopied(true);

@@ -136,7 +136,7 @@ const MessagePage = () => {
         ).slice(0, 3);
         setSuggestions(uniqueSuggestions || []);
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch suggestions. Please try again.",
