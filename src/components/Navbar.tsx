@@ -3,33 +3,34 @@
 import { Loader2, LogOut, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isLogginOut, setIsLogginOut] = useState(false);
 
   const pathname = usePathname();
+  const { status } = useSession();
 
   const router = useRouter();
 
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
-  if (status === "loading" && isDashboardRoute) {
-    return (
-      <nav className="fixed top-0 w-full z-50 py-3 px-6 bg-background/80 backdrop-blur-md border-b border-border/40">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <MessageCircle className="h-8 w-8 text-primary/80" />
-            <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              SecretDrop
-            </h1>
-          </div>
-          <div className="w-20 h-8 bg-muted animate-pulse rounded"></div>
-        </div>
-      </nav>
-    );
-  }
+  // if (status === "loading" && isDashboardRoute) {
+  //   return (
+  //     <nav className="fixed top-0 w-full z-50 py-3 px-6 bg-background/80 backdrop-blur-md border-b border-border/40">
+  //       <div className="max-w-6xl mx-auto flex items-center justify-between">
+  //         <div className="flex items-center space-x-3">
+  //           <MessageCircle className="h-8 w-8 text-primary/80" />
+  //           <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+  //             SecretDrop
+  //           </h1>
+  //         </div>
+  //         <div className="w-20 h-8 bg-muted animate-pulse rounded"></div>
+  //       </div>
+  //     </nav>
+  //   );
+  // }
 
   const handleLogout = async () => {
     setIsLogginOut(true);
