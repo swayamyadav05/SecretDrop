@@ -71,7 +71,7 @@ const DashboardPage = () => {
       if (!response.data.success) {
         throw new Error("Failed to mark as read");
       }
-    } catch (error) {
+    } catch {
       setMessages((prev) =>
         prev.map((msg) =>
           msg._id.toString() === messageId
@@ -87,7 +87,7 @@ const DashboardPage = () => {
     }
   };
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const user = session?.user as User;
 
@@ -150,18 +150,15 @@ const DashboardPage = () => {
     }
   };
 
-  const smartFetchMessages = async () => {
+  const smartFetchMessages = useCallback(async () => {
     const now = Date.now();
     const cacheAge = now - lastFetch;
 
-    if (
-      !isInitialLoad &&
-      cacheAge < CACHE_DURATION &&
-      messages.length > 0
-    ) {
+    if (!isInitialLoad && cacheAge < CACHE_DURATION) {
       console.log(
         `Using cached messages (age: ${Math.round(cacheAge / 1000)}s)`
       );
+      setIsLoading(false);
       return;
     }
 
@@ -196,7 +193,7 @@ const DashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [lastFetch, isInitialLoad, CACHE_DURATION, toast]);
 
   const fetchNewMessages = useCallback(async () => {
     if (isPolling || isLoading) return;
@@ -241,13 +238,24 @@ const DashboardPage = () => {
   }, [isPolling, isLoading, messages, toast]);
 
   useEffect(() => {
-    if (!session?.user) return;
-    smartFetchMessages();
-    fetchAcceptMessage();
-  }, [session?.user]);
+    if (status === "loading") {
+      setIsLoading(true);
+      return;
+    }
+
+    if (status === "unauthenticated") {
+      setIsLoading(false);
+      return;
+    }
+
+    if (status === "authenticated" && session?.user) {
+      smartFetchMessages();
+      fetchAcceptMessage();
+    }
+  }, [status, session?.user, smartFetchMessages, fetchAcceptMessage]);
 
   useEffect(() => {
-    if (!session?.user) return;
+    if (status !== "authenticated" || !session?.user) return;
 
     const pollInterval = setInterval(() => {
       if (document.visibilityState === "visible") {
@@ -256,7 +264,7 @@ const DashboardPage = () => {
     }, POLL_INTERVAL);
 
     return () => clearInterval(pollInterval);
-  }, [session?.user, fetchNewMessages]);
+  }, [status, session?.user, fetchNewMessages]);
 
   return (
     <div className="min-h-screen px-6">

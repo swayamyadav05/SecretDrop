@@ -33,10 +33,10 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const { acceptMessage } = payload;
+    const { acceptMessages } = payload;
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { isAcceptingMessages: acceptMessage },
+      { isAcceptingMessages: acceptMessages },
       { new: true }
     );
 
