@@ -20,9 +20,12 @@ export async function sendVerificationEmail(
     }
 
     const emailData = {
-      from: "SecretDrop <noreply@updates.swayamyadav.me>",
+      from:
+        process.env.EMAIL_FROM ||
+        "SecretDrop <noreply@updates.swayamyadav.me>",
       to: [email],
-      subject: "SecretDrop Verification code",
+      subject:
+        process.env.EMAIL_SUBJECT || "SecretDrop Verification code",
       react: VerificationEmail({ username, otp: verifyCode }),
     };
 

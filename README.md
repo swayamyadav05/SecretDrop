@@ -42,11 +42,18 @@
 
 ### 🎨 **Modern UI/UX**
 
-- **Beautiful Minimal Animations** with custom CSS animations
+- **Beautiful Animations** with custom CSS animations
 - **Gradient Themes** and modern design patterns
 - **Component-based UI** using Radix UI and shadcn/ui
 - **Form Validation** with Zod schemas
 - **Toast Notifications** for user feedback
+
+### ⚙️ **Configuration & Customization**
+
+- **Environment-based Configuration** - Easy setup with `.env.example` template
+- **Customizable Email Branding** - Personalize sender name and subject lines
+- **Flexible App Branding** - White-label ready with configurable app name
+- **Production-ready Deployment** - Optimized for Vercel with proper environment handling
 
 ## 🛠️ Tech Stack
 
@@ -103,7 +110,13 @@ npm install
 ```
 
 3. **Set up environment variables**
-   Create a `.env.local` file in the root directory:
+   Copy the example file and configure your values:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Or create a `.env.local` file manually with the following configuration:
 
 ```env
 # Database
@@ -118,8 +131,15 @@ NEXTAUTH_URL=http://localhost:3000
 # Email Service (Resend)
 RESEND_API_KEY=your-resend-api-key
 
+# Email Configuration (Optional - will use defaults if not set)
+EMAIL_FROM="SecretDrop <noreply@your-domain.com>"
+EMAIL_SUBJECT="SecretDrop Verification Code"
+
 # AI Service (Google Gemini)
 GOOGLE_GENERATIVE_AI_API_KEY=your-google-ai-api-key
+
+# Application Branding (Optional)
+APP_NAME="SecretDrop"
 ```
 
 4. **Run the development server**
@@ -166,7 +186,9 @@ mystery-message/
 │   ├── types/                # TypeScript type definitions
 │   └── helpers/              # Helper functions
 ├── emails/                   # Email templates
-└── public/                   # Static assets
+├── public/                   # Static assets
+├── .env.example              # Environment variables template
+└── vercel.json               # Vercel deployment configuration
 ```
 
 ## 🔧 Configuration
@@ -183,6 +205,9 @@ mystery-message/
 2. Get your API key
 3. Configure the sender domain
 4. Add API key to environment variables
+5. Customize email appearance (Optional)
+
+**Note**: You can use any display name with your verified domain. The domain must be verified in Resend, but the display name and email prefix can be customized.
 
 ### AI Configuration
 
@@ -274,12 +299,29 @@ CMD ["npm", "start"]
 ### Environment Variables for Production
 
 ```env
+# Core Configuration
 MONGODB_URI=your-production-mongodb-uri
 NEXTAUTH_SECRET=your-production-secret
 NEXTAUTH_URL=https://your-domain.com
+
+# Email Service
 RESEND_API_KEY=your-resend-api-key
+EMAIL_FROM="SecretDrop <noreply@your-domain.com>"
+EMAIL_SUBJECT="SecretDrop Verification Code"
+
+# AI Service
 GOOGLE_GENERATIVE_AI_API_KEY=your-google-ai-api-key
+
+# Branding (Optional)
+APP_NAME="SecretDrop"
 ```
+
+**💡 Pro Tips for Production:**
+
+- Use a strong, unique `NEXTAUTH_SECRET` (32+ characters)
+- Set `EMAIL_FROM` to match your verified domain in Resend
+- Customize `EMAIL_SUBJECT` for better user experience
+- Consider different `APP_NAME` for white-labeling
 
 ## 🧪 Testing
 

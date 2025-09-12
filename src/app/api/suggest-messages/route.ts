@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    const prompt = `Create three anonymous message suggestions for SecretDrop, a platform where people send honest, anonymous feedback and messages. These should be conversation starters that encourage genuine, thoughtful communication.
+    const appName = process.env.APP_NAME || "SecretDrop";
+    const prompt = `Create three anonymous message suggestions for ${appName}, a platform where people send honest, anonymous feedback and messages. These should be conversation starters that encourage genuine, thoughtful communication.
 
 Format: Three suggestions separated by '||'
 
