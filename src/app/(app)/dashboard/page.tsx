@@ -61,7 +61,7 @@ const DashboardPage = () => {
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
     document
-      .querySelector("#message-card")
+      .getElementById("message-card")
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -305,15 +305,13 @@ const DashboardPage = () => {
   }, [status, session?.user, fetchNewMessages]);
 
   useEffect(() => {
-    if (messages.length > 0 && currentPage > 1) {
-      const totalPagesNew = Math.ceil(
-        messages.length / messagesPerPage
-      );
-      if (currentPage > totalPagesNew) {
-        setCurrentPage(1);
-      }
+    const totalPagesNew = Math.ceil(
+      messages.length / messagesPerPage
+    );
+    if (currentPage > totalPagesNew) {
+      setCurrentPage(Math.max(1, totalPagesNew));
     }
-  }, [messages.length]);
+  }, [messages.length, messagesPerPage, currentPage]);
 
   return (
     <div className="min-h-screen px-6">
@@ -437,7 +435,7 @@ const DashboardPage = () => {
           </div>
 
           {/** Right Column - Controls */}
-          <div className="lg:mt-13 space-y-6">
+          <div className="lg:mt-12 space-y-6">
             {/** Message Settings */}
             <Card className="message-card">
               <CardHeader className="flex justify-between items-center">
@@ -478,14 +476,15 @@ const DashboardPage = () => {
 
         {/* Pagination Control */}
         <div className="grid grid-cols-3">
-          <div className="col-span-3 lg:col-span-2 gap-2">
+          <div className="col-span-3 lg:col-span-2">
             {totalPages > 1 && (
               <div className="flex justify-between items-center mt-6 px-2">
                 <Button
                   variant={"outline"}
                   onClick={handlePrevPage}
                   disabled={!hasPrevPage}
-                  className="flex items-center gap-2">
+                  className="flex items-center"
+                  aria-label="Go to previous page">
                   <ChevronLeft className="w-4 h-4" />
                   Previous
                 </Button>
@@ -496,13 +495,11 @@ const DashboardPage = () => {
                       variant={"secondary"}
                       size={"sm"}
                       onClick={() => handlePageChange(1)}
-                      className="text-xs px-3 py-1">
+                      className="text-xs px-3 py-1"
+                      aria-label="Jump to latest message">
                       Latest Message
                     </Button>
                   )}
-                  {/* </div> */}
-
-                  {/* <div className="flex items-center gap-2 text-sm text-muted-foreground"> */}
                   <span>
                     Page {currentPage} of {totalPages}
                   </span>
@@ -515,7 +512,8 @@ const DashboardPage = () => {
                   variant={"outline"}
                   onClick={handleNextPage}
                   disabled={!hasNextPage}
-                  className="flex items-center gap-2">
+                  className="flex items-center"
+                  aria-label="Go to next page">
                   Next
                   <ChevronRight className="w-4 h-4" />
                 </Button>

@@ -8,13 +8,16 @@ const Footer = () => {
   return (
     <>
       <Separator />
-      <footer className="bg-background border-t border-border/40">
+      <footer className="bg-background">
         <div className="max-w-6xl mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <MessageCircle className="h-6 w-6 text-primary" />
+                <MessageCircle
+                  className="h-6 w-6 text-primary"
+                  aria-hidden="true"
+                />
                 <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   SecretDrop
                 </span>
@@ -65,7 +68,7 @@ const Footer = () => {
             </p>
             <div className="flex items-center space-x-4 mt-4 sm:mt-0">
               <span className="text-muted-foreground">
-                Made with ❤️ for anonymous communication
+                Made with ❤️ for anonymous feedbacks
               </span>
             </div>
           </div>
