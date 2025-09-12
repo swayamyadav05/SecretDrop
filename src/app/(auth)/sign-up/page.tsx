@@ -56,7 +56,7 @@ const SignUpPage = () => {
         setIsCheckingUsername(true);
         try {
           const response = await axios.get(
-            `/api/check-username-unique?username=${username}`
+            `/api/check-username-unique?username=${encodeURIComponent(username)}`
           );
 
           setUsernameMessage(response.data.message);
