@@ -116,11 +116,10 @@ const SignUpPage = () => {
           </Button>
           <div className="flex justify-center mb-4">
             <div className="flex items-center justify-center">
-              <MessageCircle className="relative h-14 w-14 gradient-text fill-accent" />
-              <LockIcon className="flex  absolute h-5 w-5 pb-0.5 text-background" />
+              <MessageCircle className="relative h-14 w-14 text-primary/80" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold gradient-text mb-2">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Join Secret Drop
           </h1>
           <p className="text-muted-foreground">
