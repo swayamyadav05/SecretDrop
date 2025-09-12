@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, LogOut, MessageCircle } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
