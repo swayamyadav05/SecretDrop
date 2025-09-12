@@ -3,6 +3,7 @@ import { useToast } from "@/app/hooks/use-toast";
 import { MessageCard } from "@/components/MessageCard";
 import ShareLinkCard from "@/components/ShareLinkCard";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,7 +16,12 @@ import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import { Mail, MessageCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Mail,
+  MessageCircle,
+} from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -33,11 +39,43 @@ const DashboardPage = () => {
   const [isPolling, setIsPolling] = useState(false);
   const POLL_INTERVAL = 5000;
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const messagesPerPage = 4;
+
   const { toast } = useToast();
 
   const unreadCount = messages.filter(
     (message) => !message.isRead
   ).length;
+
+  const indexOfLastMessage = currentPage * messagesPerPage;
+  const indexOfFirstMessage = indexOfLastMessage - messagesPerPage;
+  const currentMessages = messages.slice(
+    indexOfFirstMessage,
+    indexOfLastMessage
+  );
+  const totalPages = Math.ceil(messages.length / messagesPerPage);
+  const hasNextPage = currentPage < totalPages;
+  const hasPrevPage = currentPage > 1;
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    document
+      .querySelector("#message-card")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (hasPrevPage) {
+      handlePageChange(currentPage - 1);
+    }
+  };
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages((prev) =>
@@ -266,9 +304,20 @@ const DashboardPage = () => {
     return () => clearInterval(pollInterval);
   }, [status, session?.user, fetchNewMessages]);
 
+  useEffect(() => {
+    if (messages.length > 0 && currentPage > 1) {
+      const totalPagesNew = Math.ceil(
+        messages.length / messagesPerPage
+      );
+      if (currentPage > totalPagesNew) {
+        setCurrentPage(1);
+      }
+    }
+  }, [messages.length]);
+
   return (
     <div className="min-h-screen px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto mb-4">
         <div className="mb-4">
           <h1 className="text-lg font-medium text-foreground/90">
             Welcome,{" "}
@@ -328,18 +377,26 @@ const DashboardPage = () => {
           </Card> */}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          id="message-card"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/** Left Column - Messages */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">
                 Your Secret Drop Box
               </h2>
-              {unreadCount > 0 && (
+              {unreadCount > 0 ? (
                 <Badge
                   variant={"secondary"}
                   className="bg-accent/20 text-accent">
                   {unreadCount} unread
+                </Badge>
+              ) : (
+                <Badge
+                  variant={"secondary"}
+                  className="bg-accent/20 text-accent">
+                  All read
                 </Badge>
               )}
             </div>
@@ -355,7 +412,7 @@ const DashboardPage = () => {
                   </CardContent>
                 </Card>
               ) : messages.length > 0 ? (
-                messages.map((message, index) => (
+                currentMessages.map((message, index) => (
                   <MessageCard
                     key={message._id}
                     message={message}
@@ -380,7 +437,7 @@ const DashboardPage = () => {
           </div>
 
           {/** Right Column - Controls */}
-          <div className="space-y-6">
+          <div className="lg:mt-13 space-y-6">
             {/** Message Settings */}
             <Card className="message-card">
               <CardHeader className="flex justify-between items-center">
@@ -416,6 +473,54 @@ const DashboardPage = () => {
 
             {/** Share Link */}
             <ShareLinkCard username={user?.username ?? ""} />
+          </div>
+        </div>
+
+        {/* Pagination Control */}
+        <div className="grid grid-cols-3">
+          <div className="col-span-3 lg:col-span-2 gap-2">
+            {totalPages > 1 && (
+              <div className="flex justify-between items-center mt-6 px-2">
+                <Button
+                  variant={"outline"}
+                  onClick={handlePrevPage}
+                  disabled={!hasPrevPage}
+                  className="flex items-center gap-2">
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </Button>
+
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  {currentPage > 1 && unreadCount > 0 && (
+                    <Button
+                      variant={"secondary"}
+                      size={"sm"}
+                      onClick={() => handlePageChange(1)}
+                      className="text-xs px-3 py-1">
+                      Latest Message
+                    </Button>
+                  )}
+                  {/* </div> */}
+
+                  {/* <div className="flex items-center gap-2 text-sm text-muted-foreground"> */}
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Badge variant={"secondary"} className="text-xs">
+                    {messages.length} total
+                  </Badge>
+                </div>
+
+                <Button
+                  variant={"outline"}
+                  onClick={handleNextPage}
+                  disabled={!hasNextPage}
+                  className="flex items-center gap-2">
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

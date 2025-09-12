@@ -25,7 +25,6 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  LockIcon,
   MessageCircle,
 } from "lucide-react";
 
