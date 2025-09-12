@@ -77,7 +77,7 @@ const MessagePage = () => {
 
       if (!response.data?.success) {
         toast({
-          title: "Error sending message",
+          title: "Message not sent",
           description:
             response.data?.message ??
             "User is not accepting messages at the moment!",
