@@ -10,6 +10,11 @@
 
 **SecretDrop** is a modern, anonymous messaging platform built with Next.js 15 that allows users to receive honest feedback and messages without revealing the sender's identity. Perfect for creating a safe space for anonymous communication, feedback collection, and honest conversations.
 
+## Why ?
+*Honest feedback* is rare because people hold back when their names are attached — fear of awkwardness, backlash, or consequences. Many “anonymous” tools promise secrecy but leak metadata, allow deanonymization, or turn into noisy, hostile forums. I built **SecretDrop** to be radically simple and reliable: a shareable public link that only delivers messages — no sender details, no unmasking, no guessing.  The recipient can share their public link on there bio, profile, etc. and can get the honest feedbacks from people. The recipient’s can control toggle: turn message receiving on or off. If your profile is open, senders can send anonymous notes; if it’s closed, they can’t.
+
+To help senders phrase useful feedback (without revealing who they are), the public message page includes optional *AI-powered suggestions* and conversation starters. This helps people write clearer, kinder, or more constructive messages while keeping their identity completely hidden — **SecretDrop** never exposes sender metadata. Combined with secure account practices (OTP email verification, hashed passwords, session tokens), **SecretDrop** gives *creators*, *teachers*, *teams*, and anyone who wants candid input a quiet, dependable channel for unfiltered feedback.
+
 ## ✨ Features
 
 ### 🔐 **Authentication & Security**
