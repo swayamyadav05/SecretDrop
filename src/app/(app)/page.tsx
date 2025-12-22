@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageCircle, Shield, Users, Zap } from "lucide-react";
-// import heroMystery from "@/assets/hero-mystery.jpg";
 import { useRouter } from "next/navigation";
 
 const features = [
@@ -41,11 +40,6 @@ const Landing = () => {
       {/* Hero Section */}
       <section className="pt-20 pb-10 px-6 text-center relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* <img
-            src={heroMystery}
-            alt="Secret Drop hero background"
-            className="w-full h-full object-cover opacity-30"
-          /> */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-background/80"></div>
         </div>
         <div className="max-w-4xl mx-auto relative z-10">
