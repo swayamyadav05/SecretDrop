@@ -9,7 +9,7 @@ const Footer = () => {
     <>
       <Separator />
       <footer className="bg-background">
-        <div className="max-w-6xl mx-auto py-8">
+        <div className="max-w-6xl mx-auto py-8 px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
             <div className="col-span-1 md:col-span-2">
