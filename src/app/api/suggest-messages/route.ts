@@ -1,4 +1,4 @@
-import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
 
@@ -30,7 +30,7 @@ Avoid: Personal questions, sensitive topics, anything that feels invasive or ina
 
     const result = await generateText({
       // model: openai("gpt-3.5-turbo"),
-      model: google("gemini-1.5-flash"),
+      model: openai("gpt-5-mini"),
       maxOutputTokens: 100,
       temperature: 0.8,
       prompt,
