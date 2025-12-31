@@ -29,8 +29,7 @@ Create suggestions that:
 Avoid: Personal questions, sensitive topics, anything that feels invasive or inappropriate for anonymous messaging.`;
 
     const result = await generateText({
-      // model: openai("gpt-3.5-turbo"),
-      model: openai("gpt-5-mini"),
+      model: openai("gpt-4o-mini"),
       maxOutputTokens: 100,
       temperature: 0.8,
       prompt,
