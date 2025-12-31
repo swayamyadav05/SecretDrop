@@ -5,38 +5,35 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     const appName = process.env.APP_NAME || "SecretDrop";
-    const prompt = `Create three anonymous message suggestions for ${appName}, a platform where people send honest, anonymous feedback and messages. These should be conversation starters that encourage genuine, thoughtful communication.
+    const prompt = `Create three anonymous message suggestions for ${appName}, a platform where people send honest, anonymous feedback and messages.
 
-Format: Three suggestions separated by '||'
+IMPORTANT: Return ONLY the three suggestions separated by '||' with no additional text, preamble, or explanation.
 
-Categories to include:
-- Honest feedback or appreciation
-- Personal thoughts or confessions  
-- Constructive observations
+Format: suggestion1||suggestion2||suggestion3
 
-Tone: Encouraging, respectful, and safe for anonymous sharing
-Audience: People wanting to share something meaningful but privately
-
-Examples of good suggestions:
-'I've always wanted to tell you that your positive energy really brightens up the room||Here's something I've noticed about you that I think you should know...||I wanted to share some honest feedback that might help you grow'
-
-Create suggestions that:
+Each suggestion should:
 - Start conversations rather than ask questions
 - Feel safe to share anonymously  
 - Encourage meaningful, honest communication
-- Are appropriate for diverse relationships (friends, colleagues, etc.)
+- Be appropriate for diverse relationships
 
-Avoid: Personal questions, sensitive topics, anything that feels invasive or inappropriate for anonymous messaging.`;
+Examples:
+I've always wanted to tell you that your positive energy really brightens up the room||Here's something I've noticed about you that I think you should know||I wanted to share some honest feedback that might help you grow`;
 
     const result = await generateText({
       model: openai("gpt-4o-mini"),
-      maxOutputTokens: 100,
+      maxOutputTokens: 300,
       temperature: 0.8,
       prompt,
     });
 
-    // Validate and fix the output
-    const suggestions = result.text.trim();
+    // Validate and fix the output - extract just the suggestions
+    let suggestions = result.text.trim();
+
+    suggestions = suggestions
+      .replace(/^[\s\S]*?(?=.+?\|\|)/, "")
+      .split("\n\n")[0]
+      .trim();
 
     let suggestionsArray = suggestions
       .split("||")
