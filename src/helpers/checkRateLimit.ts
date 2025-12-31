@@ -14,10 +14,10 @@ const rateLimitStore = new Map<string, RateLimitData>();
 const RATE_LIMITS: {
   [key: string]: { limit: number; window: number };
 } = {
-  "/api/send-message": { limit: 30, window: 60000 },
-  "/api/suggest-messages": { limit: 15, window: 60000 },
-  "/api/sign-up": { limit: 25, window: 60000 },
-  "/api/verify-code": { limit: 10, window: 60000 },
+  "/api/send-message": { limit: 300, window: 60000 },
+  "/api/suggest-messages": { limit: 150, window: 60000 },
+  "/api/sign-up": { limit: 250, window: 60000 },
+  "/api/verify-code": { limit: 100, window: 60000 },
 };
 
 export function getRealIP(request: NextRequest) {
